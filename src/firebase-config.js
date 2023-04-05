@@ -14,10 +14,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 
 export const auth = getAuth()
-export const db = getFirestore()
-export const colRef = collection(
-  db,
-  process.env.REACT_APP_FIREBASE_COLLECTION_USERS
-)
+export const db = getFirestore(app)
+// export const colRef = collection(
+//   db,
+//   process.env.REACT_APP_FIREBASE_COLLECTION_USERS
+// )
 //console.log('firebase-config has been called')
 export default app

@@ -12,9 +12,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
-import { css } from '@emotion/react'
-import { auth } from '../firebase-config'
+//import { css } from '@emotion/react'
 import { useAuth } from '../contexts/AuthContext'
+//import { useNavigate } from 'react-router-dom'
 import { Link as domLink, useNavigate } from 'react-router-dom'
 import { Alert } from '@mui/material'
 
@@ -70,10 +70,6 @@ export default function SignIn() {
     setLoading(false)
   }
 
-  const handleOnClick = () => {
-    setError('')
-  }
-
   //console.log('Render App')
 
   return (
@@ -110,18 +106,22 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
-              onClick={handleOnClick}
+              onClick={() => {
+                setError('')
+              }}
             />
             <TextField
               margin="normal"
               required
               fullWidth
-              name="password"
-              label="비밀번호"
-              type="password"
               id="password"
+              label="비밀번호"
+              name="password"
+              type="password"
               autoComplete="current-password"
-              onClick={handleOnClick}
+              onClick={() => {
+                setError('')
+              }}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -139,22 +139,28 @@ export default function SignIn() {
             <Grid container>
               <Grid item xs>
                 <Link
-                  href="#"
-                  variant="body2"
-                  fontFamily="Nanum Pen Script"
+                  href=""
+                  onClick={() => {
+                    navigate('/forgot-password')
+                  }}
+                  variant="h7"
+                  fontFamily="Gamja Flower"
                   fontSize="1.5rem"
                 >
-                  비밀번호 초기화 요청
+                  비밀번호 초기화
                 </Link>
               </Grid>
               <Grid item>
                 <Link
-                  href="#"
-                  variant="body2"
-                  fontFamily="Nanum Pen Script"
+                  href=""
+                  onClick={() => {
+                    navigate('/new-user')
+                  }}
+                  variant="h7"
+                  fontFamily="Gamja Flower"
                   fontSize="1.5rem"
                 >
-                  {'신규 계정 등록 요청'}
+                  사용자 등록
                 </Link>
               </Grid>
             </Grid>

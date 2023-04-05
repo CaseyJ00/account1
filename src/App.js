@@ -4,11 +4,13 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 // import logo from './logo.svg'
 import './App.css'
 import { AuthProvider } from './contexts/AuthContext'
-import Dashboard from './pages/Dashboard'
+import Home from './pages/Home'
 import ForgotPassword from './pages/ForgotPassword'
+import NewUser from './pages/NewUser'
 import SignIn from './pages/SignIn'
 import Singnup from './pages/Singnup'
 import UpdateProfile from './pages/UpdateProfile'
+import { DbProvider } from './contexts/DbContext'
 
 function App() {
   return (
@@ -17,13 +19,19 @@ function App() {
         <BrowserRouter>
           <AuthProvider>
             <Routes>
-              <Route path="/home" element={<Dashboard />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/home" element={<Home />} />
               <Route path="/update-profile" element={<UpdateProfile />} />
               <Route path="/signup" element={<Singnup />} />
               <Route path="/login" element={<SignIn />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
             </Routes>
           </AuthProvider>
+          <DbProvider>
+            <Routes>
+              <Route path="/new-user" element={<NewUser />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+            </Routes>
+          </DbProvider>
         </BrowserRouter>
       </div>
     </Container>
