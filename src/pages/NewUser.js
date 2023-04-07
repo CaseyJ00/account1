@@ -14,9 +14,7 @@ import {
   Select,
   Alert,
 } from '@mui/material'
-// import { TreeItem, TreeView } from '@mui/lab'
-// import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-// import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useNavigate } from 'react-router-dom'
 import RichObjectTreeView from '../components/RichObjectTreeView'
@@ -48,12 +46,6 @@ export default function NewUser() {
   const [loading, setLoading] = useState(false)
   const [unitCode, setUnitCode] = useState('')
   const navigate = useNavigate()
-
-  const unitCodeList = [
-    { unitCode: 10, unitName: '교육부' },
-    { unitCode: 20, unitName: '재정부' },
-    { unitCode: 30, unitName: '관리부' },
-  ]
 
   const parsedData = []
 
@@ -147,7 +139,7 @@ export default function NewUser() {
           }}
         >
           <Typography component="h1" variant="h5" fontFamily="Nanum Gothic">
-            신규 사용자 계정 등록 요청
+            사용자 계정 등록 요청
           </Typography>
           {error && <Alert severity="error">{error}</Alert>}
           <Box
@@ -156,26 +148,6 @@ export default function NewUser() {
             noValidate
             sx={{ mt: 3 }}
           >
-            <FormControl required fullWidth>
-              <InputLabel id="unit-select-label">부서 선택</InputLabel>
-              <Select
-                labelId="unit-select-label"
-                id="unit-select"
-                value={unitCode}
-                label="unit-code"
-                onChange={handleChange}
-              >
-                {unitCodeList.map((each, index) => {
-                  //console.log(each.unitName)
-                  return (
-                    <MenuItem key={index} value={each.unitCode}>
-                      {each.unitName}
-                    </MenuItem>
-                  )
-                })}
-              </Select>
-            </FormControl>
-
             <RichObjectTreeView data={parsedData} title="소속 부서" />
 
             <TextField

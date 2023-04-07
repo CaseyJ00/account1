@@ -1,15 +1,17 @@
 // import { ThemeProvider, createTheme } from '@mui/material/styles'
-import React, { useState } from 'react'
+import { useState, forwardRef } from 'react'
 //import ReactDOM from 'react-dom'
 import TreeItem from '@mui/lab/TreeItem'
-import { Popover, TextField, Typography } from '@mui/material'
+import { Popover, TextField, Typography, InputAdornment } from '@mui/material'
 import clsx from 'clsx'
 import { TreeView, useTreeItem } from '@mui/lab'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+// import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+// import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import ArrowRightIcon from '@mui/icons-material/ArrowRight'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 // import { useMediaQuery } from '@mui/material'
 
-const CustomContent = React.forwardRef(function CustomContent(props, ref) {
+const CustomContent = forwardRef(function CustomContent(props, ref) {
   const {
     classes,
     className,
@@ -37,6 +39,7 @@ const CustomContent = React.forwardRef(function CustomContent(props, ref) {
   }
 
   const handleExpansionClick = (event) => {
+    // console.log('handleExpansionClick event : ', event.currentTarget)
     handleExpansion(event)
   }
 
@@ -70,16 +73,18 @@ const CustomContent = React.forwardRef(function CustomContent(props, ref) {
     </div>
   )
 })
+
 const CustomTreeItem = (props) => (
   <TreeItem ContentComponent={CustomContent} {...props} />
 )
 
 export default function RichObjectTreeView({ formik, edit, data, title }) {
-  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [anchorEl, setAnchorEl] = useState(null)
   const [equipmentItem, setEquipmentItem] = useState('')
   const [equipmentId, setEquipmentId] = useState('')
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
+    //console.log('event.currentTarget: ', event.currentTarget)
   }
 
   const handleClose = () => {
@@ -100,9 +105,11 @@ export default function RichObjectTreeView({ formik, edit, data, title }) {
   return (
     <>
       <TextField
-        variant="standard"
-        required={false}
+        margin="normal"
+        required
         label={title}
+        fullWidth
+        // select
         name="unitItem"
         id="unitItem"
         defaultValue={equipmentItem}
@@ -110,6 +117,14 @@ export default function RichObjectTreeView({ formik, edit, data, title }) {
         className="w-100"
         inputProps={{ readOnly: !edit }}
         onClick={handleClick}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <ArrowRightIcon />
+            </InputAdornment>
+          ),
+        }}
+        placeholder="소속 부서를 선택해주세요"
       />
 
       <Popover
@@ -126,8 +141,9 @@ export default function RichObjectTreeView({ formik, edit, data, title }) {
           aria-label="icon expansion"
           defaultSelected={equipmentId}
           selected={equipmentId}
-          defaultCollapseIcon={<ExpandMoreIcon />}
-          defaultExpandIcon={<ChevronRightIcon />}
+          // expanded={['1']}
+          defaultCollapseIcon={<ArrowDropDownIcon />}
+          defaultExpandIcon={<ArrowRightIcon />}
           onNodeSelect={(e, id) => {
             setEquipmentId(id)
             setEquipmentItem(e.target.innerText)
