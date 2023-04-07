@@ -126,6 +126,10 @@ export default function NewUser() {
 
   //console.log('Render App')
 
+  const reqRegister = () => {
+    navigate('/home')
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -183,6 +187,7 @@ export default function NewUser() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
               disabled={loading}
+              onClick={reqRegister}
             >
               사용자 등록 요청
             </Button>

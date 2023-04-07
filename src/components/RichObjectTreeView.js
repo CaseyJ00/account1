@@ -1,15 +1,10 @@
-// import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { useState, forwardRef } from 'react'
-//import ReactDOM from 'react-dom'
 import TreeItem from '@mui/lab/TreeItem'
 import { Popover, TextField, Typography, InputAdornment } from '@mui/material'
 import clsx from 'clsx'
 import { TreeView, useTreeItem } from '@mui/lab'
-// import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-// import ChevronRightIcon from '@mui/icons-material/ChevronRight'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
-// import { useMediaQuery } from '@mui/material'
 
 const CustomContent = forwardRef(function CustomContent(props, ref) {
   const {
@@ -39,7 +34,6 @@ const CustomContent = forwardRef(function CustomContent(props, ref) {
   }
 
   const handleExpansionClick = (event) => {
-    // console.log('handleExpansionClick event : ', event.currentTarget)
     handleExpansion(event)
   }
 
@@ -82,9 +76,10 @@ export default function RichObjectTreeView({ formik, edit, data, title }) {
   const [anchorEl, setAnchorEl] = useState(null)
   const [equipmentItem, setEquipmentItem] = useState('')
   const [equipmentId, setEquipmentId] = useState('')
+  const [expanded, setExpanded] = useState(['1'])
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
-    //console.log('event.currentTarget: ', event.currentTarget)
   }
 
   const handleClose = () => {
@@ -101,6 +96,10 @@ export default function RichObjectTreeView({ formik, edit, data, title }) {
         : null}
     </CustomTreeItem>
   )
+
+  const handleToggle = (event, nodeIds) => {
+    setExpanded(nodeIds)
+  }
 
   return (
     <>
@@ -141,13 +140,15 @@ export default function RichObjectTreeView({ formik, edit, data, title }) {
           aria-label="icon expansion"
           defaultSelected={equipmentId}
           selected={equipmentId}
-          // expanded={['1']}
+          expanded={expanded}
           defaultCollapseIcon={<ArrowDropDownIcon />}
           defaultExpandIcon={<ArrowRightIcon />}
           onNodeSelect={(e, id) => {
             setEquipmentId(id)
             setEquipmentItem(e.target.innerText)
+            setAnchorEl(null)
           }}
+          onNodeToggle={handleToggle}
           sx={{
             height: 200,
             flexGrow: 1,
@@ -161,23 +162,3 @@ export default function RichObjectTreeView({ formik, edit, data, title }) {
     </>
   )
 }
-
-// const App = () => {
-//   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
-//   const theme = React.useMemo(
-//     () =>
-//       createTheme({
-//         palette: {
-//           mode: prefersDarkMode ? 'dark' : 'light',
-//         },
-//       }),
-//     [prefersDarkMode]
-//   )
-//   return (
-//     <ThemeProvider theme={theme}>
-//       <RichObjectTreeView />
-//     </ThemeProvider>
-//   )
-// }
-
-// ReactDOM.render(<App />, document.getElementById("root"));
