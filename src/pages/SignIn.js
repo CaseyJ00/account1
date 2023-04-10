@@ -17,24 +17,7 @@ import { useAuth } from '../contexts/AuthContext'
 //import { useNavigate } from 'react-router-dom'
 import { Link as domLink, useNavigate } from 'react-router-dom'
 import { Alert } from '@mui/material'
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {'Copyright © '}
-      <Link color="inherit" href="https://atoms-kr.com/">
-        Atoms
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  )
-}
+import AtomsCopyright from '../components/AtomsCopyright'
 
 const theme = createTheme()
 
@@ -166,7 +149,7 @@ export default function SignIn() {
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
+        <AtomsCopyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   )

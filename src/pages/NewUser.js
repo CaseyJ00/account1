@@ -19,25 +19,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useNavigate } from 'react-router-dom'
 import RichObjectTreeView from '../components/RichObjectTreeView'
 import { useDb } from '../contexts/DbContext'
-import { query, getDocs } from 'firebase/firestore'
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {'Copyright © '}
-      <Link color="inherit" href="https://atoms-kr.com/">
-        Atoms
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  )
-}
+import { query, getDocs, addDoc, getDoc } from 'firebase/firestore'
+import AtomsCopyright from '../components/AtomsCopyright'
 
 const theme = createTheme()
 
@@ -120,14 +103,44 @@ export default function NewUser() {
     setLoading(false)
   }
 
-  const handleChange = (event) => {
-    setUnitCode(event.target.value)
+  let selectedId = ''
+  let selectedUnitName = ''
+  const selCallback = (id, name) => {
+    selectedId = id
+    selectedUnitName = name
+    //console.log(`ID: ${id}; unit name: ${name}`)
   }
 
-  //console.log('Render App')
+  let email = ''
+  let userName = ''
+  const hdlEmailInput = (event) => {
+    email = event.target.value
+  }
+  const hdlNameInput = (event) => {
+    userName = event.target.value
+  }
 
   const reqRegister = () => {
-    navigate('/home')
+    console.log(
+      `Request resgisteration for ID: ${selectedId}; unit name: ${selectedUnitName}`
+    )
+
+    const colRef = getColRef('requests')
+    addDoc(colRef, {
+      unitId: selectedId,
+      unitName: selectedUnitName,
+      email: email,
+      userName: userName,
+    })
+      .then((docRef) => {
+        console.log(`done request, given Id : ${docRef.id}`)
+      })
+      .catch((err) => {
+        console.log(err.message)
+        setError('시스템 장애가 있습니다. 나중에 다시 시도해보세요.')
+      })
+
+    // navigate('/home')
   }
 
   return (
@@ -148,11 +161,15 @@ export default function NewUser() {
           {error && <Alert severity="error">{error}</Alert>}
           <Box
             component="form"
-            onSubmit={handleSubmit}
+            // onSubmit={handleSubmit}
             noValidate
             sx={{ mt: 3 }}
           >
-            <RichObjectTreeView data={parsedData} title="소속 부서" />
+            <RichObjectTreeView
+              data={parsedData}
+              title="소속 부서"
+              selCallback={selCallback}
+            />
 
             <TextField
               margin="normal"
@@ -163,6 +180,7 @@ export default function NewUser() {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={hdlEmailInput}
               onClick={() => {
                 setError('')
               }}
@@ -176,20 +194,21 @@ export default function NewUser() {
               label="성명"
               name="name"
               autoFocus
+              onChange={hdlNameInput}
               onClick={() => {
                 setError('')
               }}
             />
 
             <Button
-              type="submit"
+              // type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
               disabled={loading}
               onClick={reqRegister}
             >
-              사용자 등록 요청
+              요청(위 항목 입력 후 클릭)
             </Button>
             <Grid container>
               <Grid item xs>
@@ -221,7 +240,7 @@ export default function NewUser() {
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
+        <AtomsCopyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   )

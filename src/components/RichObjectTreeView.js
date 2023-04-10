@@ -72,7 +72,13 @@ const CustomTreeItem = (props) => (
   <TreeItem ContentComponent={CustomContent} {...props} />
 )
 
-export default function RichObjectTreeView({ formik, edit, data, title }) {
+export default function RichObjectTreeView({
+  formik,
+  edit,
+  data,
+  title,
+  selCallback,
+}) {
   const [anchorEl, setAnchorEl] = useState(null)
   const [equipmentItem, setEquipmentItem] = useState('')
   const [equipmentId, setEquipmentId] = useState('')
@@ -96,6 +102,13 @@ export default function RichObjectTreeView({ formik, edit, data, title }) {
         : null}
     </CustomTreeItem>
   )
+
+  const handleSelection = (e, id) => {
+    setEquipmentId(id)
+    setEquipmentItem(e.target.innerText)
+    setAnchorEl(null)
+    selCallback(id, e.target.innerText)
+  }
 
   const handleToggle = (event, nodeIds) => {
     setExpanded(nodeIds)
@@ -143,11 +156,7 @@ export default function RichObjectTreeView({ formik, edit, data, title }) {
           expanded={expanded}
           defaultCollapseIcon={<ArrowDropDownIcon />}
           defaultExpandIcon={<ArrowRightIcon />}
-          onNodeSelect={(e, id) => {
-            setEquipmentId(id)
-            setEquipmentItem(e.target.innerText)
-            setAnchorEl(null)
-          }}
+          onNodeSelect={(e, id) => handleSelection(e, id)}
           onNodeToggle={handleToggle}
           sx={{
             height: 200,
