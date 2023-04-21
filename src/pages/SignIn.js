@@ -70,7 +70,7 @@ export default function SignIn() {
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5" fontFamily="Nanum Gothic">
+          <Typography variant="h5" fontFamily="Nanum Gothic">
             로그인
           </Typography>
           {error && <Alert severity="error">{error}</Alert>}
@@ -119,7 +119,7 @@ export default function SignIn() {
             >
               로그인
             </Button>
-            <Grid container>
+            <Grid container sx={{ mt: 2 }}>
               <Grid item xs>
                 <Link
                   href=""

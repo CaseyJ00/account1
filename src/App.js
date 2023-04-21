@@ -8,9 +8,11 @@ import Home from './pages/Home'
 import ForgotPassword from './pages/ForgotPassword'
 import NewUser from './pages/NewUser'
 import SignIn from './pages/SignIn'
+import MainPage from './pages/MainPage'
 import Singnup from './pages/Singnup'
 import UpdateProfile from './pages/UpdateProfile'
 import { DbProvider } from './contexts/DbContext'
+import NewAccount from './pages/NewAccount'
 
 function App() {
   return (
@@ -18,20 +20,20 @@ function App() {
       <div className="w-100" style={{ maxWidth: '400px' }}>
         <BrowserRouter>
           <AuthProvider>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/update-profile" element={<UpdateProfile />} />
-              <Route path="/signup" element={<Singnup />} />
-              <Route path="/login" element={<SignIn />} />
-            </Routes>
+            <DbProvider>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/update-profile" element={<UpdateProfile />} />
+                <Route path="/signup" element={<Singnup />} />
+                <Route path="/login" element={<SignIn />} />
+                <Route path="/main" element={<MainPage />} />
+                <Route path="/new-user" element={<NewUser />} />
+                <Route path="/new-account" element={<NewAccount />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+              </Routes>
+            </DbProvider>
           </AuthProvider>
-          <DbProvider>
-            <Routes>
-              <Route path="/new-user" element={<NewUser />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-            </Routes>
-          </DbProvider>
         </BrowserRouter>
       </div>
     </Container>

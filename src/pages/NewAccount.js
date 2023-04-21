@@ -8,10 +8,6 @@ import {
   Box,
   Typography,
   Container,
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Select,
   Alert,
 } from '@mui/material'
 
@@ -21,14 +17,22 @@ import RichObjectTreeView from '../components/RichObjectTreeView'
 import { useDb } from '../contexts/DbContext'
 import { query, getDocs, addDoc, getDoc } from 'firebase/firestore'
 import AtomsCopyright from '../components/AtomsCopyright'
+import { useAuth } from '../contexts/AuthContext'
+import { firebaseConfig, auth } from '../firebase-config'
+import { initializeApp } from 'firebase/app'
+import { createUserWithEmailAndPassword, signOut, getAuth } from 'firebase/auth'
 
 const theme = createTheme()
 
-export default function NewUser() {
+export default function NewAccount() {
+  const { signup } = useAuth()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [unitCode, setUnitCode] = useState('')
   const navigate = useNavigate()
+
+  const secondaryApp = initializeApp(firebaseConfig, 'Secondary')
+  const secondaryAuth = getAuth(secondaryApp)
 
   const parsedData = []
 
@@ -143,6 +147,29 @@ export default function NewUser() {
     // navigate('/home')
   }
 
+  const createUserAccount = () => {
+    console.log(
+      `Request resgisteration for ID: ${selectedId}; unit name: ${selectedUnitName}`
+    )
+    console.log(`Create a user account for ${email}`)
+    // console.log(firebaseConfig.initPwd)
+
+    createUserWithEmailAndPassword(secondaryAuth, email, firebaseConfig.initPwd)
+      .then((userCredential) => {
+        const createdUser = userCredential.user
+        console.log('created user: ', createdUser)
+        signOut(secondaryAuth)
+        const user = auth.currentUser
+        console.log('admin user', user)
+      })
+      .catch((err) => {
+        const errorCode = err.code
+        const errorMessage = err.message
+        console.log(`Error Code: ${errorCode}, Error Message: ${errorMessage}`)
+        setError('시스템 장애가 있습니다. 나중에 다시 시도해보세요.')
+      })
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -156,7 +183,7 @@ export default function NewUser() {
           }}
         >
           <Typography variant="h5" fontFamily="Nanum Gothic">
-            사용자 계정 등록 요청
+            사용자 계정 등록
           </Typography>
           {error && <Alert severity="error">{error}</Alert>}
           <Box
@@ -168,6 +195,12 @@ export default function NewUser() {
             <RichObjectTreeView
               data={parsedData}
               title="소속 부서"
+              selCallback={selCallback}
+            />
+
+            <RichObjectTreeView
+              data={parsedData}
+              title="결제 권한 선택"
               selCallback={selCallback}
             />
 
@@ -206,9 +239,9 @@ export default function NewUser() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
               disabled={loading}
-              onClick={reqRegister}
+              onClick={createUserAccount}
             >
-              요청(위 항목 입력 후 클릭)
+              등록(위 항목 입력 후 클릭)
             </Button>
             <Grid container sx={{ mt: 2 }}>
               <Grid item xs>

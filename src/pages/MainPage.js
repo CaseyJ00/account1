@@ -1,34 +1,28 @@
 import React, { useState } from 'react'
 import {
-  Button,
-  CssBaseline,
-  TextField,
-  Link,
-  Grid,
   Box,
-  Typography,
   Container,
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Select,
-  Alert,
+  ToggleButtonGroup,
+  ToggleButton,
+  Button,
+  Badge,
 } from '@mui/material'
-
+import SaveIcon from '@mui/icons-material/Save'
+import ApprovalIcon from '@mui/icons-material/Approval'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useNavigate } from 'react-router-dom'
-import RichObjectTreeView from '../components/RichObjectTreeView'
 import { useDb } from '../contexts/DbContext'
 import { query, getDocs, addDoc, getDoc } from 'firebase/firestore'
 import AtomsCopyright from '../components/AtomsCopyright'
 
 const theme = createTheme()
 
-export default function NewUser() {
+export default function MainPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [unitCode, setUnitCode] = useState('')
   const navigate = useNavigate()
+  const [alignment, setAlignment] = useState('reqBudget')
 
   const parsedData = []
 
@@ -143,102 +137,56 @@ export default function NewUser() {
     // navigate('/home')
   }
 
+  const handleChange = (event, newAlignment) => {
+    console.log('current menu', alignment)
+    console.log('menu to be selected', newAlignment)
+    setAlignment(newAlignment)
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
-        <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 4,
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: 'row',
             alignItems: 'center',
           }}
         >
-          <Typography variant="h5" fontFamily="Nanum Gothic">
-            사용자 계정 등록 요청
-          </Typography>
-          {error && <Alert severity="error">{error}</Alert>}
-          <Box
-            component="form"
-            // onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 3 }}
+          <ToggleButtonGroup
+            color="primary"
+            value={alignment}
+            exclusive
+            onChange={handleChange}
+            aria-label="Platform"
           >
-            <RichObjectTreeView
-              data={parsedData}
-              title="소속 부서"
-              selCallback={selCallback}
-            />
-
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="E-메일 주소"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              onChange={hdlEmailInput}
-              onClick={() => {
-                setError('')
-              }}
-            />
-
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="name"
-              label="성명"
-              name="name"
-              autoFocus
-              onChange={hdlNameInput}
-              onClick={() => {
-                setError('')
-              }}
-            />
-
-            <Button
-              // type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={loading}
-              onClick={reqRegister}
-            >
-              요청(위 항목 입력 후 클릭)
-            </Button>
-            <Grid container sx={{ mt: 2 }}>
-              <Grid item xs>
-                <Link
-                  href=""
-                  onClick={() => {
-                    navigate('/home')
-                  }}
-                  variant="h7"
-                  fontFamily="Gamja Flower"
-                  fontSize="1.5rem"
-                >
-                  홈 화면
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link
-                  href=""
-                  onClick={() => {
-                    navigate('/login')
-                  }}
-                  variant="h7"
-                  fontFamily="Gamja Flower"
-                  fontSize="1.5rem"
-                >
-                  로그인
-                </Link>
-              </Grid>
-            </Grid>
-          </Box>
+            <ToggleButton value="reqBudget" sx={{ py: '2px', px: '4px' }}>
+              청구
+            </ToggleButton>
+            <ToggleButton value="expend" sx={{ py: '2px', px: '4px' }}>
+              지출
+            </ToggleButton>
+            <ToggleButton value="acntBook" sx={{ py: '2px', px: '4px' }}>
+              장부
+            </ToggleButton>
+            <ToggleButton value="return" sx={{ py: '2px', px: '4px' }}>
+              반납
+            </ToggleButton>
+            <ToggleButton value="income" sx={{ py: '2px', px: '4px' }}>
+              입금
+            </ToggleButton>
+          </ToggleButtonGroup>
+          <Button
+            variant="outlined"
+            startIcon={<SaveIcon />}
+            sx={{ ml: 2, py: '2px', px: '2px' }}
+          >
+            저장
+          </Button>
+          <Badge badgeContent={4} color="error" sx={{ ml: 0.5, px: '2px' }}>
+            <ApprovalIcon color="action" />
+          </Badge>
         </Box>
         <AtomsCopyright sx={{ mt: 6, mb: 4 }} />
       </Container>
