@@ -16,8 +16,26 @@ import NewAccount from './pages/NewAccount'
 
 function App() {
   return (
-    <Container maxWidth="md">
-      <div className="w-100" style={{ maxWidth: '400px' }}>
+    // <Container maxWidth="md">
+    <Container
+      style={{
+        marginLeft: '0px',
+        marginRight: '0px',
+        paddingLeft: '0px',
+        paddingRight: '0px',
+      }}
+    >
+      <div
+        className="w-100"
+        style={{
+          maxWidth: '800px',
+          marginLeft: '0px',
+          marginRight: '0px',
+          paddingLeft: '0px',
+          paddingRight: '0px',
+        }}
+      >
+        {/* <div> */}
         <BrowserRouter>
           <AuthProvider>
             <DbProvider>

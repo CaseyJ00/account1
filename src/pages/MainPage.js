@@ -6,14 +6,21 @@ import {
   ToggleButton,
   Button,
   Badge,
+  Grid,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material'
 import SaveIcon from '@mui/icons-material/Save'
 import ApprovalIcon from '@mui/icons-material/Approval'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
+import LogoutIcon from '@mui/icons-material/Logout'
 import { useNavigate } from 'react-router-dom'
 import { useDb } from '../contexts/DbContext'
 import { query, getDocs, addDoc, getDoc } from 'firebase/firestore'
 import AtomsCopyright from '../components/AtomsCopyright'
+import ApprovalTable from '../components/ApprovalTable'
 
 const theme = createTheme()
 
@@ -22,7 +29,9 @@ export default function MainPage() {
   const [loading, setLoading] = useState(false)
   const [unitCode, setUnitCode] = useState('')
   const navigate = useNavigate()
-  const [alignment, setAlignment] = useState('reqBudget')
+  const [docPage, setDocPage] = useState('reqBudget')
+  const [selectedDoc, setSelectedDoc] = useState('')
+  const [selectedBook, setSelectedBook] = useState('')
 
   const parsedData = []
 
@@ -81,71 +90,28 @@ export default function MainPage() {
       setError('조직 정보 가져오기 실패')
     })
 
-  const handleSubmit = (event) => {
-    event.preventDefault()
-
-    const data = new FormData(event.currentTarget)
-
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    })
-
-    setError('')
-    setLoading(true)
-
-    setLoading(false)
+  const handleChangeOnSel = (event, newDocPage) => {
+    console.log('current menu', docPage)
+    console.log('menu to be selected', newDocPage)
+    setDocPage(newDocPage)
+    setSelectedDoc('reqBudget')
+    setSelectedBook('')
   }
 
-  let selectedId = ''
-  let selectedUnitName = ''
-  const selCallback = (id, name) => {
-    selectedId = id
-    selectedUnitName = name
-    //console.log(`ID: ${id}; unit name: ${name}`)
+  const handleChangeOnDoc = (event) => {
+    setSelectedDoc(event.target.value)
+    setSelectedBook('')
   }
 
-  let email = ''
-  let userName = ''
-  const hdlEmailInput = (event) => {
-    email = event.target.value
-  }
-  const hdlNameInput = (event) => {
-    userName = event.target.value
-  }
-
-  const reqRegister = () => {
-    console.log(
-      `Request resgisteration for ID: ${selectedId}; unit name: ${selectedUnitName}`
-    )
-
-    const colRef = getColRef('requests')
-    addDoc(colRef, {
-      unitId: selectedId,
-      unitName: selectedUnitName,
-      email: email,
-      userName: userName,
-    })
-      .then((docRef) => {
-        console.log(`done request, given Id : ${docRef.id}`)
-      })
-      .catch((err) => {
-        console.log(err.message)
-        setError('시스템 장애가 있습니다. 나중에 다시 시도해보세요.')
-      })
-
-    // navigate('/home')
-  }
-
-  const handleChange = (event, newAlignment) => {
-    console.log('current menu', alignment)
-    console.log('menu to be selected', newAlignment)
-    setAlignment(newAlignment)
+  const handleChangeOnBook = (event) => {
+    setSelectedBook(event.target.value)
+    setSelectedDoc('')
+    setDocPage('')
   }
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="s">
         <Box
           sx={{
             marginTop: 4,
@@ -154,29 +120,126 @@ export default function MainPage() {
             alignItems: 'center',
           }}
         >
+          {/* <Grid container sx={{ justifyContent: 'space-around' }}> */}
+          <Grid container sx={{ justifyContent: 'space-between' }}>
+            <Grid item xs={4}>
+              <FormControl fullWidth size="small">
+                <InputLabel id="demo-simple-select-label">문서</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={selectedDoc}
+                  label="Unit"
+                  onChange={handleChangeOnDoc}
+                >
+                  <MenuItem value={10} sx={{ color: 'primary.dark' }}>
+                    교3-작성
+                  </MenuItem>
+                  <MenuItem value={20} sx={{ color: 'warning.dark' }}>
+                    예E001
+                  </MenuItem>
+                  <MenuItem value={30} style={{ color: 'gray' }}>
+                    교3B001
+                  </MenuItem>
+                  <MenuItem value={40} sx={{ color: 'warning.dark' }}>
+                    교3R001
+                  </MenuItem>
+                  <MenuItem value={50} sx={{ color: 'warning.dark' }}>
+                    재I001
+                  </MenuItem>
+                  <MenuItem value={60} sx={{ color: 'secondary.dark' }}>
+                    재-장부
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={3}>
+              <FormControl fullWidth>
+                <Button variant="contained">주광철</Button>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={4}>
+              <FormControl fullWidth>
+                <Button
+                  variant="outlined"
+                  startIcon={<LogoutIcon />}
+                  // sx={{ ml: 2, py: '2px', px: '2px' }}
+                >
+                  Logout
+                </Button>
+              </FormControl>
+            </Grid>
+          </Grid>
+        </Box>
+
+        <Box
+          sx={{
+            marginTop: 2,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
           <ToggleButtonGroup
             color="primary"
-            value={alignment}
+            value={docPage}
             exclusive
-            onChange={handleChange}
+            onChange={handleChangeOnSel}
             aria-label="Platform"
           >
-            <ToggleButton value="reqBudget" sx={{ py: '2px', px: '4px' }}>
+            <ToggleButton value="reqBudget" sx={{ py: '6px', px: '7px' }}>
               청구
             </ToggleButton>
-            <ToggleButton value="expend" sx={{ py: '2px', px: '4px' }}>
+            <ToggleButton value="expend" sx={{ py: '6px', px: '7px' }}>
               지출
             </ToggleButton>
-            <ToggleButton value="acntBook" sx={{ py: '2px', px: '4px' }}>
-              장부
-            </ToggleButton>
-            <ToggleButton value="return" sx={{ py: '2px', px: '4px' }}>
+
+            <ToggleButton value="return" sx={{ py: '6px', px: '7px' }}>
               반납
             </ToggleButton>
-            <ToggleButton value="income" sx={{ py: '2px', px: '4px' }}>
+            <ToggleButton value="income" sx={{ py: '6px', px: '7px' }}>
               입금
             </ToggleButton>
           </ToggleButtonGroup>
+
+          <FormControl size="small">
+            <InputLabel id="demo-simple-select-label">장부</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={selectedBook}
+              label="Unit"
+              onChange={handleChangeOnBook}
+            >
+              <MenuItem value={10}>예배부</MenuItem>
+              <MenuItem value={20}>성가부</MenuItem>
+              <MenuItem value={30}>교육1부</MenuItem>
+              <MenuItem value={40}>교육2부</MenuItem>
+              <MenuItem value={50}>재정부</MenuItem>
+              <MenuItem value={60}>관리부</MenuItem>
+            </Select>
+          </FormControl>
+
+          <Badge
+            badgeContent={4}
+            color="error"
+            sx={{ ml: 0.5, px: '2px', mr: 0.5 }}
+          >
+            <ApprovalIcon color="action" />
+          </Badge>
+        </Box>
+
+        <Box
+          sx={{
+            marginTop: 4,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
           <Button
             variant="outlined"
             startIcon={<SaveIcon />}
@@ -184,10 +247,29 @@ export default function MainPage() {
           >
             저장
           </Button>
-          <Badge badgeContent={4} color="error" sx={{ ml: 0.5, px: '2px' }}>
-            <ApprovalIcon color="action" />
-          </Badge>
         </Box>
+        <Box
+          sx={{
+            marginTop: 4,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
+          <ApprovalTable />
+        </Box>
+
+        <Box
+          sx={{
+            marginTop: 4,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}
+        >
+          {/* main content */}
+        </Box>
+
         <AtomsCopyright sx={{ mt: 6, mb: 4 }} />
       </Container>
     </ThemeProvider>
