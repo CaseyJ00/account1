@@ -122,6 +122,9 @@ export default function MainPage() {
     console.log(`ID: ${id}; Doc: ${doc}`)
   }
 
+  let unit = '교육3부'
+  let position = '회계'
+  let aprvName = '박경란'
 
   return (
     <ThemeProvider theme={theme}>
@@ -153,7 +156,7 @@ export default function MainPage() {
             <Grid item xs={9}>
               <ToggleButtonGroup color="primary" value={docPage} exclusive onChange={handleChangeOnSel} aria-label="Platform">
                 <ToggleButton value="reqBudget" sx={{py:'6px', px:'4px'}}>
-                  서류 작성
+                  문서 작성
                 </ToggleButton>
                 <ToggleButton value="expend" sx={{py:'6px', px:'4px'}}>
                   수정/승인
@@ -173,10 +176,10 @@ export default function MainPage() {
           </Grid>  
         </Box>
 
-        <Box sx={{mt:1.5, mx:0, display:'flex', flexDirection:'row', justifyContent:'space-between'}} >
+        <Box sx={{mt:2, mx:0, display:'flex', flexDirection:'row', justifyContent:'space-between'}} >
           <Grid container spacing={1} direction="row" justifyContent="space-between" alignItems="center">
             <Grid item xs={6}>
-              <RichObjectTreeView data={docTypes} title="문서 선택" selCallback={selCallback} placeholder="작업할 문서 선택" size="small" fontControl={true}/>
+              <RichObjectTreeView data={docTypes} title="문서 선택" selCallback={selCallback} placeholder="처리할 문서 선택" size="small" fontControl={true}/>
             </Grid>
             
             <Grid item xs={6}>
@@ -192,7 +195,7 @@ export default function MainPage() {
         </Box>      
     
         <Box sx={{mt:1, mx:0, display:'flex', flexDirection:'row', alignItems:'center'}}>
-          <ApprovalTable />
+          <ApprovalTable unit={unit} position={position} aprName={aprvName} />
         </Box>
 
         <Box sx={{mt:4, display:'flex', flexDirection:'row', alignItems:'center'}}>

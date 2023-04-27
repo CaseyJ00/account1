@@ -1,51 +1,40 @@
 import React, { useState } from 'react'
 import {
-  Box,
-  Container,
-  ToggleButtonGroup,
-  ToggleButton,
   Button,
-  Badge,
-  Grid,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  FormControlLabel,
-  Checkbox,
-  FormGroup,
+  Typography,
 } from '@mui/material'
+import styled from '@emotion/styled'
+
 import { createTheme, ThemeProvider } from '@mui/material/styles'
+
+import imgApprove from "./image/Approve.png"
+// import imgNoDecision from "./image/NoDecision.png"
+import imgReject from "./image/Reject.png"
+import imgHoding from "./image/Holding.png"
 
 const theme = createTheme()
 
-export default function ApprovalTable() {
-  const approverList = [
-    { unit: '교육3부',
-      approver: [
-        { position: '회계', name: '박경란' },
-        { position: ' 부장', name: '주광철' }]},
-    { unit: '관리부', approver: [{ position: '부장', name: '황태연' }] },
+export default function ApprovalTable({unit, position, aprName }) {  
+  const [aprvState, setAprvState] = useState(0)
 
-    { unit: '재정부',
-      approver: [
-        { position: '회계', name: '최종철' },
-        { position: '부장', name: '정인환' }]},
-
-    { unit:'구미교회', approver:[{position: '목사', name: '김대동'}]},
-  ]
-
-  let strTmp = ""
+  let tmpState = 0
+  const handleClick = () => {
+    tmpState = aprvState + 1
+    tmpState %= 4
+    setAprvState(tmpState)
+  }
+  
   return (
-    <FormGroup aria-label="position" row align-items="start">
-      {approverList.map((item) => {
-        strTmp = item.unit + ': '
-        item.approver.map((approver) => {strTmp += `${approver.position}  ${approver.name}`})
-        return(        
-          <FormControlLabel key={item.unit} value={item.unit}  control={<Checkbox />}
-            label={strTmp}
-            labelPlacement="start" />
-      )})}
-    </FormGroup>
+    <ThemeProvider theme={theme}>
+      <Typography variant='subtitle1' sx={{mr:0, pr:0}}>
+        {`${unit} ${position} ${aprName}`}
+      </Typography>
+      <Button sx={{ml:-1.5, pl:0}} onClick={handleClick}>
+        {aprvState === 0 && "(인)"}
+        {aprvState === 1 && <img src={imgApprove} alt="stemp" width={"30px"} />}
+        {aprvState === 2 && <img src={imgReject} alt="stemp" width={"30px"} />}
+        {aprvState === 3 && <img src={imgHoding} alt="stemp" width={"30px"} />}
+      </Button>
+    </ThemeProvider>
   )
 }
