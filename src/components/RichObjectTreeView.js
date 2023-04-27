@@ -5,6 +5,7 @@ import clsx from 'clsx'
 import { TreeView, useTreeItem } from '@mui/lab'
 import ArrowRightIcon from '@mui/icons-material/ArrowRight'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
+import styled from '@emotion/styled'
 
 const CustomContent = forwardRef(function CustomContent(props, ref) {
   const {
@@ -72,13 +73,7 @@ const CustomTreeItem = (props) => (
   <TreeItem ContentComponent={CustomContent} {...props} />
 )
 
-export default function RichObjectTreeView({
-  formik,
-  edit,
-  data,
-  title,
-  selCallback,
-}) {
+export default function RichObjectTreeView({edit, data, title, selCallback, placeholder, size, fontControl}) {
   const [anchorEl, setAnchorEl] = useState(null)
   const [equipmentItem, setEquipmentItem] = useState('')
   const [equipmentId, setEquipmentId] = useState('')
@@ -114,20 +109,15 @@ export default function RichObjectTreeView({
     setExpanded(nodeIds)
   }
 
+  const StyledTextField = styled(TextField)({
+    '& .MuiInputBase-input':{fontSize: 14}
+  })
+
   return (
     <>
-      <TextField
-        margin="normal"
-        required
-        label={title}
-        fullWidth
-        // select
-        name="unitItem"
-        id="unitItem"
-        defaultValue={equipmentItem}
-        value={equipmentItem}
-        className="w-100"
-        inputProps={{ readOnly: !edit }}
+      {!fontControl && <TextField size={size} required label={title} fullWidth name="unitItem" id="unitItem"
+        value={equipmentItem} 
+        className="w-100"   inputProps={{ readOnly: !edit }}
         onClick={handleClick}
         InputProps={{
           startAdornment: (
@@ -136,8 +126,22 @@ export default function RichObjectTreeView({
             </InputAdornment>
           ),
         }}
-        placeholder="소속 부서를 선택해주세요"
-      />
+        placeholder={placeholder}
+      />}
+
+      {!!fontControl && <StyledTextField size={size} required label={title} fullWidth name="unitItem" id="unitItem"
+        value={equipmentItem} 
+        className="w-100"   inputProps={{ readOnly: !edit }}
+        onClick={handleClick}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <ArrowRightIcon />
+            </InputAdornment>
+          ),
+        }}
+        placeholder={placeholder}
+      />}
 
       <Popover
         id={id}

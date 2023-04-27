@@ -186,23 +186,19 @@ export default function NewAccount() {
             사용자 계정 등록
           </Typography>
           {error && <Alert severity="error">{error}</Alert>}
-          <Box
-            component="form"
+          <Box component="form" 
             // onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 3 }}
-          >
-            <RichObjectTreeView
-              data={parsedData}
-              title="소속 부서"
-              selCallback={selCallback}
-            />
-
-            <RichObjectTreeView
-              data={parsedData}
-              title="결제 권한 선택"
-              selCallback={selCallback}
-            />
+            noValidate    sx={{ mt: 3 }}>
+          
+            <RichObjectTreeView data={parsedData}
+              title="소속 부서" selCallback={selCallback}
+              placeholder="소속 부서를 선택해주세요" />
+            
+            <Box sx={{ mt:4, mb:1 }}> 
+              <RichObjectTreeView data={parsedData} 
+                title="결제 권한" selCallback={selCallback}
+                placeholder="결제 권한을 선택해주세요"/>
+            </Box>
 
             <TextField
               margin="normal"

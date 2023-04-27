@@ -11,9 +11,11 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Typography,
 } from '@mui/material'
 import SaveIcon from '@mui/icons-material/Save'
 import ApprovalIcon from '@mui/icons-material/Approval'
+import SettingsIcon from '@mui/icons-material/Settings'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { useNavigate } from 'react-router-dom'
@@ -21,8 +23,11 @@ import { useDb } from '../contexts/DbContext'
 import { query, getDocs, addDoc, getDoc } from 'firebase/firestore'
 import AtomsCopyright from '../components/AtomsCopyright'
 import ApprovalTable from '../components/ApprovalTable'
+import RichObjectTreeView from '../components/RichObjectTreeView'
 
 const theme = createTheme()
+
+const docTypes = [{id:'1', name:'예산 청구서'}, {id:'2', name:'예산 지출서'}, {id:'3', name:'예산 반납서'}, {id:'4', name:'수입 입금서'}, {id:'5', name:'회계감사 자료'}]
 
 export default function MainPage() {
   const [error, setError] = useState('')
@@ -109,168 +114,92 @@ export default function MainPage() {
     setDocPage('')
   }
 
+  let selectedDocId = ''
+  let selectedDocType = ''
+  const selCallback = (id, doc) => {
+    selectedDocId = id
+    selectedDocType = doc
+    console.log(`ID: ${id}; Doc: ${doc}`)
+  }
+
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="s">
-        <Box
-          sx={{
-            marginTop: 4,
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
-          {/* <Grid container sx={{ justifyContent: 'space-around' }}> */}
-          <Grid container sx={{ justifyContent: 'space-between' }}>
+        <Box sx={{mt:2, display:'flex', flexDirection:'row', alignItems:'flex-end'}}>
+          <Grid container spacing={2} direction="row" justifyContent="space-between" alignItems='flex-end'>
             <Grid item xs={4}>
-              <FormControl fullWidth size="small">
-                <InputLabel id="demo-simple-select-label">문서</InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={selectedDoc}
-                  label="Unit"
-                  onChange={handleChangeOnDoc}
-                >
-                  <MenuItem value={10} sx={{ color: 'primary.dark' }}>
-                    교3-작성
-                  </MenuItem>
-                  <MenuItem value={20} sx={{ color: 'warning.dark' }}>
-                    예E001
-                  </MenuItem>
-                  <MenuItem value={30} style={{ color: 'gray' }}>
-                    교3B001
-                  </MenuItem>
-                  <MenuItem value={40} sx={{ color: 'warning.dark' }}>
-                    교3R001
-                  </MenuItem>
-                  <MenuItem value={50} sx={{ color: 'warning.dark' }}>
-                    재I001
-                  </MenuItem>
-                  <MenuItem value={60} sx={{ color: 'secondary.dark' }}>
-                    재-장부
-                  </MenuItem>
-                </Select>
-              </FormControl>
+              <Button fullWidth variant="contained" startIcon={<SettingsIcon />} >
+                주광철
+              </Button>
             </Grid>
 
-            <Grid item xs={3}>
-              <FormControl fullWidth>
-                <Button variant="contained">주광철</Button>
-              </FormControl>
+            <Grid item xs={5}>
+              <Button variant="outlined" startIcon={<LogoutIcon />}>
+                로그아웃
+              </Button>
             </Grid>
 
-            <Grid item xs={4}>
-              <FormControl fullWidth>
-                <Button
-                  variant="outlined"
-                  startIcon={<LogoutIcon />}
-                  // sx={{ ml: 2, py: '2px', px: '2px' }}
-                >
-                  Logout
-                </Button>
-              </FormControl>
+            <Grid item xs={2} alignItems="self-end">
+              <Badge badgeContent={4} color="error">
+                <ApprovalIcon color="action" />
+              </Badge> 
             </Grid>
           </Grid>
         </Box>
 
-        <Box
-          sx={{
-            marginTop: 2,
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <ToggleButtonGroup
-            color="primary"
-            value={docPage}
-            exclusive
-            onChange={handleChangeOnSel}
-            aria-label="Platform"
-          >
-            <ToggleButton value="reqBudget" sx={{ py: '6px', px: '7px' }}>
-              청구
-            </ToggleButton>
-            <ToggleButton value="expend" sx={{ py: '6px', px: '7px' }}>
-              지출
-            </ToggleButton>
+        <Box sx={{mt:1, display:'flex', flexDirection:'row'}} >
+          <Grid container spacing={1} direction="row" justifyContent="space-between" alignItems="flex-end">
+            <Grid item xs={9}>
+              <ToggleButtonGroup color="primary" value={docPage} exclusive onChange={handleChangeOnSel} aria-label="Platform">
+                <ToggleButton value="reqBudget" sx={{py:'6px', px:'4px'}}>
+                  서류 작성
+                </ToggleButton>
+                <ToggleButton value="expend" sx={{py:'6px', px:'4px'}}>
+                  수정/승인
+                </ToggleButton>
 
-            <ToggleButton value="return" sx={{ py: '6px', px: '7px' }}>
-              반납
-            </ToggleButton>
-            <ToggleButton value="income" sx={{ py: '6px', px: '7px' }}>
-              입금
-            </ToggleButton>
-          </ToggleButtonGroup>
+                <ToggleButton value="return" sx={{py:'6px', px:'4px'}}>
+                  장부 조회
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Grid>
 
-          <FormControl size="small">
-            <InputLabel id="demo-simple-select-label">장부</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={selectedBook}
-              label="Unit"
-              onChange={handleChangeOnBook}
-            >
-              <MenuItem value={10}>예배부</MenuItem>
-              <MenuItem value={20}>성가부</MenuItem>
-              <MenuItem value={30}>교육1부</MenuItem>
-              <MenuItem value={40}>교육2부</MenuItem>
-              <MenuItem value={50}>재정부</MenuItem>
-              <MenuItem value={60}>관리부</MenuItem>
-            </Select>
-          </FormControl>
-
-          <Badge
-            badgeContent={4}
-            color="error"
-            sx={{ ml: 0.5, px: '2px', mr: 0.5 }}
-          >
-            <ApprovalIcon color="action" />
-          </Badge>
+            <Grid item xs={3}>
+              <Button variant="outlined" sx={{px:'4px'}} startIcon={<SaveIcon />}  >
+                저장
+              </Button>
+            </Grid>
+          </Grid>  
         </Box>
 
-        <Box
-          sx={{
-            marginTop: 4,
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
-          <Button
-            variant="outlined"
-            startIcon={<SaveIcon />}
-            sx={{ ml: 2, py: '2px', px: '2px' }}
-          >
-            저장
-          </Button>
-        </Box>
-        <Box
-          sx={{
-            marginTop: 4,
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
+        <Box sx={{mt:1.5, mx:0, display:'flex', flexDirection:'row', justifyContent:'space-between'}} >
+          <Grid container spacing={1} direction="row" justifyContent="space-between" alignItems="center">
+            <Grid item xs={6}>
+              <RichObjectTreeView data={docTypes} title="문서 선택" selCallback={selCallback} placeholder="작업할 문서 선택" size="small" fontControl={true}/>
+            </Grid>
+            
+            <Grid item xs={6}>
+              <Typography
+                  variant="subtitle1" align="center"
+                  // sx={{mt:'2px', border:2, borderRadius:3, borderColor:'warning.main',"javascript.format.enable": false}}
+              >
+                  {`교육3부   교3-R001`}
+              </Typography>
+            </Grid>
+            
+          </Grid>
+        </Box>      
+    
+        <Box sx={{mt:1, mx:0, display:'flex', flexDirection:'row', alignItems:'center'}}>
           <ApprovalTable />
         </Box>
 
-        <Box
-          sx={{
-            marginTop: 4,
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
-          {/* main content */}
+        <Box sx={{mt:4, display:'flex', flexDirection:'row', alignItems:'center'}}>
+          main content
         </Box>
 
-        <AtomsCopyright sx={{ mt: 6, mb: 4 }} />
+        <AtomsCopyright sx={{ mt: 6}} />
       </Container>
     </ThemeProvider>
   )
