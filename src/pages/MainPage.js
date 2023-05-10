@@ -128,9 +128,10 @@ export default function MainPage() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="s">
+      <Container component="main" maxWidth="xs">
         <Box sx={{mt:2, display:'flex', flexDirection:'row', alignItems:'flex-end'}}>
-          <Grid container spacing={2} direction="row" justifyContent="space-between" alignItems='flex-end'>
+          {/* <Grid container direction="row" justifyContent="space-between" alignItems='flex-end'> */}
+          <Grid container spacing={1} direction="row" justifyContent="space-between" alignItems='flex-end'>
             <Grid item xs={4}>
               <Button fullWidth variant="contained" startIcon={<SettingsIcon />} >
                 주광철
@@ -144,7 +145,7 @@ export default function MainPage() {
             </Grid>
 
             <Grid item xs={2} alignItems="self-end">
-              <Badge badgeContent={4} color="error">
+              <Badge badgeContent={4}  anchorOrigin={{vertical:'top', horizontal:'left'}} color="error">
                 <ApprovalIcon color="action" />
               </Badge> 
             </Grid>
@@ -154,15 +155,16 @@ export default function MainPage() {
         <Box sx={{mt:1, display:'flex', flexDirection:'row'}} >
           <Grid container spacing={1} direction="row" justifyContent="space-between" alignItems="flex-end">
             <Grid item xs={9}>
-              <ToggleButtonGroup color="primary" value={docPage} exclusive onChange={handleChangeOnSel} aria-label="Platform">
-                <ToggleButton value="reqBudget" sx={{py:'6px', px:'4px'}}>
+              <ToggleButtonGroup color="primary" value={docPage} exclusive 
+                onChange={handleChangeOnSel} aria-label="Platform" >
+                <ToggleButton value="reqBudget" sx={{py:'6px', px:'4px', fontWeight:'bold'}}>
                   문서 작성
                 </ToggleButton>
-                <ToggleButton value="expend" sx={{py:'6px', px:'4px'}}>
+                <ToggleButton value="expend" sx={{py:'6px', px:'4px', fontWeight:'bold'}}>
                   수정/승인
                 </ToggleButton>
 
-                <ToggleButton value="return" sx={{py:'6px', px:'4px'}}>
+                <ToggleButton value="return" sx={{py:'6px', px:'4px', fontWeight:'bold'}}>
                   장부 조회
                 </ToggleButton>
               </ToggleButtonGroup>
@@ -179,10 +181,11 @@ export default function MainPage() {
         <Box sx={{mt:2, mx:0, display:'flex', flexDirection:'row', justifyContent:'space-between'}} >
           <Grid container spacing={1} direction="row" justifyContent="space-between" alignItems="center">
             <Grid item xs={6}>
-              <RichObjectTreeView data={docTypes} title="문서 선택" selCallback={selCallback} placeholder="처리할 문서 선택" size="small" fontControl={true}/>
+              <RichObjectTreeView data={docTypes} title="문서 선택" selCallback={selCallback} 
+                             placeholder="처리할 문서 선택" size="small" fontControl={true}/>
             </Grid>
             
-            <Grid item xs={6}>
+            <Grid item xs={6} >
               <Typography
                   variant="subtitle1" align="center"
                   // sx={{mt:'2px', border:2, borderRadius:3, borderColor:'warning.main',"javascript.format.enable": false}}
@@ -194,7 +197,7 @@ export default function MainPage() {
           </Grid>
         </Box>      
     
-        <Box sx={{mt:1, mx:0, display:'flex', flexDirection:'row', alignItems:'center'}}>
+        <Box sx={{mt:1, mx:0, display:'flex', flexDirection:'column', alignItems:'center'}}>
           <ApprovalTable unit={unit} position={position} aprName={aprvName} />
         </Box>
 
