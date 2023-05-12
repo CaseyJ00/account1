@@ -24,11 +24,12 @@ import { query, getDocs, addDoc, getDoc } from 'firebase/firestore'
 import AtomsCopyright from '../components/AtomsCopyright'
 import ApprovalTable from '../components/ApprovalTable'
 import RichObjectTreeView from '../components/RichObjectTreeView'
+import BudgetRequest from '../components/BudgetRequest'
 
 const theme = createTheme()
 
 const docTypes = [{id:'1', name:'예산 청구서'}, {id:'2', name:'예산 지출서'}, {id:'3', name:'예산 반납서'}, {id:'4', name:'수입 입금서'}, {id:'5', name:'회계감사 자료'}]
-
+const budgetTable =[{item:'', desc:'', amount:0}]
 export default function MainPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -201,8 +202,8 @@ export default function MainPage() {
           <ApprovalTable unit={unit} position={position} aprName={aprvName} />
         </Box>
 
-        <Box sx={{mt:4, display:'flex', flexDirection:'row', alignItems:'center'}}>
-          main content
+        <Box sx={{mt:2, display:'flex', flexDirection:'row', alignItems:'center'}}>
+          <BudgetRequest tableData={budgetTable}/>
         </Box>
 
         <AtomsCopyright sx={{ mt: 6}} />

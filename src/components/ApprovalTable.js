@@ -55,7 +55,7 @@ export default function ApprovalTable({unit, position, aprName }) {
               <Typography variant='subtitle1'>
                 {`${unit} ${position} ${aprName}`}
               </Typography>
-              <Button sx={{ml:-2}} onClick={handleStampClick}>
+              <Button sx={{ml:-2}} onClick={handleStampClick} disableFocusRipple>
                 {aprvState === 0 && "(인)"}
                 {aprvState === 1 && <img src={imgApprove} alt="stemp" width={"30px"} />}
                 {aprvState === 2 && <img src={imgReject} alt="stemp" width={"30px"} />}
